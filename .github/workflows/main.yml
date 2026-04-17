@@ -16,6 +16,8 @@ jobs:
           node-version: 20
           repository: q-13t/ci_cd_test
           token: ${{ secrets.PAT }}
+        permissions:
+          contents: read
       - run: npm ci
       - run: npm lint
       - run: npm build
