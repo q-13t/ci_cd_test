@@ -20,5 +20,5 @@ jobs:
           token: ${{ secrets.PAT }}
 
       - run: npm ci
-      - run: npm lint
-      - run: npm build
+      - run: npm run lint
+      - run: npm run build
