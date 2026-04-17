@@ -1,0 +1,24 @@
+name: Lint On Pull
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  Lint:
+    permissions:
+      contents: read
+    runs-on: ubuntu-latest
+    container:
+      image: node:20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          node-version: 20
+          repository: q-13t/ci_cd_test
+          token: ${{ secrets.PAT }}
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run build
