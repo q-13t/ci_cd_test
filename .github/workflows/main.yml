@@ -1,0 +1,19 @@
+name: Lint On Pull
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  Lint:
+    runs-on: ubuntu-latest
+    container:
+      image: node:20
+    steps:
+      - uses: actions/checkpit@v3
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm lint
+      - run: npm build
