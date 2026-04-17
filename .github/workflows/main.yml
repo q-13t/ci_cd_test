@@ -11,9 +11,11 @@ jobs:
     container:
       image: node:20
     steps:
-      - uses: super-linter/super-linter@v5
+      - uses: actions/checkout@v4
         with:
           node-version: 20
+          repository: q-13t/ci_cd_test
+          token: ${{ secrets.PAT }}
       - run: npm ci
       - run: npm lint
       - run: npm build
