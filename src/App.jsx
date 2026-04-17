@@ -4,7 +4,7 @@ import './App.css';
 function App() {
     const foo = () => {
 
-    }
+    };
     return (
         <div className="App">
             <header className="App-header">
