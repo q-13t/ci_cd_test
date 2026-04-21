@@ -31,7 +31,8 @@ jobs:
   deploy_main:
     if: github.event_name == 'push'
     runs-on: self-hosted
-
+    container:
+          image: node:20
     steps:
       - name: Checkout
         uses: actions/checkout@v4
