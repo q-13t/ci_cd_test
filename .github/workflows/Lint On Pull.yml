@@ -53,8 +53,7 @@ jobs:
         run: npm run lint:fix
 
       - name: Commit lint fixes
-        needs: lint_fix
-        if: steps.lint_fix..outcome == 'success'
+        if: steps.lint_fix.outcome == 'success'
         run: |
           git config user.name "github-actions"
           git config user.email "actions@github.com"
