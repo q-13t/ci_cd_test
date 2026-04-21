@@ -1,24 +1,80 @@
-name: Lint On Pull
+name: CI/CD Pipeline
 
 on:
   pull_request:
-    branches:
-      - main
+    branches: [main]
+  push:
+    branches: [main]
 
 jobs:
-  Lint:
-    permissions:
-      contents: read
-    runs-on: ubuntu-latest
+
+  # -------------------------
+  # PR LINT (validation only)
+  # -------------------------
+  lint_pr:
+    if: github.event_name == 'pull_request'
+    runs-on: self-hosted
+
     container:
       image: node:20
+
     steps:
       - uses: actions/checkout@v4
-        with:
-          node-version: 20
-          repository: q-13t/ci_cd_test
-          token: ${{ secrets.PAT }}
 
       - run: npm ci
-      - run: npm run lint
-      - run: npm run build
+      - run: npm run lint:check
+
+
+  # -------------------------
+  # MAIN BRANCH PIPELINE
+  # -------------------------
+  deploy_main:
+    if: github.event_name == 'push'
+    runs-on: self-hosted
+    container:
+          image: node:20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install deps
+        run: npm ci
+
+      # 1. Initial lint check
+      - name: Lint check
+        id: lint_check
+        run: npm run lint:check
+        continue-on-error: true
+
+      # 2. Try auto-fix if failed
+      - name: Attempt lint fix
+        id: lint_fix
+        if: steps.lint_check.outcome == 'failure'
+        run: npm run lint:fix
+
+      - name: Commit lint fixes
+        needs: lint_fix
+        if: steps.lint_fix..outcome == 'success'
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add .
+          git commit -m "Auto-fix lint"
+          git push
+
+      # 3. Re-check lint (hard fail here)
+      - name: Final lint validation
+        run: npm run lint:check
+
+      # 4. Build Docker image
+      - name: Build Docker image
+        run: docker build -t my-app:latest .
+
+      # 5. Replace running container
+      - name: Deploy container
+        run: |
+          docker rm -f my-app || true
+          docker run -d \
+            --name my-app \
+            -p 3000:3000 \
+            my-app:latest
