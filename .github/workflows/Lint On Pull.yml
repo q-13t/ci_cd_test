@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - run: npm ci
-      - run: npm run lint
+      - run: npm run lint:check
 
 
   # -------------------------
@@ -62,7 +62,7 @@ jobs:
 
       # 3. Re-check lint (hard fail here)
       - name: Final lint validation
-        run: npm run lint
+        run: npm run lint:check
 
       # 4. Build Docker image
       - name: Build Docker image
