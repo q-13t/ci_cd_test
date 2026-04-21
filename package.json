@@ -16,7 +16,8 @@
         "start": "vite",
         "build": "vite build",
         "test": "vite preview",
-        "lint": "eslint ."
+        "lint:check": "eslint .",
+        "lint:fix": "eslint . --fix"
     },
     "eslintConfig": {
         "extends": [
