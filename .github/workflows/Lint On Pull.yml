@@ -13,11 +13,7 @@ jobs:
   # -------------------------
   lint_pr:
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-
-    container:
-      image: node:20
-
+    runs-on: self-hosted
     steps:
       - uses: actions/checkout@v4
       - run: npm ci
